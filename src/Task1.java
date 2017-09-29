@@ -1,23 +1,31 @@
 import java.util.Arrays;
 
-/**
- * Created by Ma$ha on 26.09.2017.
- */
 public class Task1 {
     static void prn(int a[]) {
         System.out.println(Arrays.toString(a));
     }
 
-    static String bruteForce(int price[]) {
-        int max = price[1] - price[0];
-        int N = price.length;
-        int a = 0;
-        int b = 0;
-        int x = 0;
-        for (int i = 0; i < N - 1; i++) {
-            x++;
-            for (int j = i + 1; j < N; j++) {
-                x++;
+    public static class MaxSum {
+        int a, b, sum;
+
+        MaxSum(int a, int b, int sum) {
+            this.a = a;
+            this.b = b;
+            this.sum = sum;
+        }
+
+        public String toString() {
+            return "Day1: " + this.a + ", Day2: " + this.b + " Sum: " + this.sum;
+        }
+    }
+
+    static MaxSum bruteForce(int price[]) {
+        int max = 0;
+        if (price.length > 1) max = price[1] - price[0];
+        int n = price.length;
+        int a = 0, b = 0;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
                 if (max < price[j] - price[i]) {
                     max = price[j] - price[i];
                     a = i;
@@ -25,36 +33,42 @@ public class Task1 {
                 }
             }
         }
-        return Integer.toString(max) + " " + "day1: " + Integer.toString(a) + " " + "day2: " + Integer.toString(b);
+        if (price.length != 0) {
+            a++;
+            b++;
+        }
+        return new MaxSum(a, b, max);
     }
 
-    static String maxsumSubArray(int price[]) {
-        int N = price.length;
-        int[] delta = new int[N - 1];
+    static MaxSum maxsumSubArray(int price[]) {
+        int n = price.length;
+        if (n == 0) return new MaxSum(0, 0, 0);
+        int[] delta = new int[n - 1];
+
         int k = 0;
-        for (int i = 0; i < N - 1; i++) {
+        for (int i = 0; i < n - 1; i++) {
             delta[k] = price[i + 1] - price[i];
             k++;
         }
-        int l = 0;
-        int r = 0;
-        int min_pos = -1;
+        int l = 0, r = 0;
+        int minPos = -1;
         int max = Integer.MIN_VALUE;
-        int max_ending_here = 0;
+        int maxEndHere = 0;
 
-        for (int i = 0; i < N - 1; i++) {
-            max_ending_here = max_ending_here + delta[i];
-            if (max < max_ending_here) {
-                max = max_ending_here;
-                l = min_pos + 1;
+        for (int i = 0; i < n - 1; i++) {
+            maxEndHere = maxEndHere + delta[i];
+            if (max < maxEndHere) {
+                max = maxEndHere;
+                l = minPos + 1;
                 r = i;
             }
-            if (max_ending_here < 0) {
-                max_ending_here = 0;
-                min_pos = i;
+            if (maxEndHere < 0) {
+                maxEndHere = 0;
+                minPos = i;
             }
         }
         r = r + 1;
-        return Integer.toString(max) + " day1: " + Integer.toString(l) + ", day2: " + Integer.toString(r);
+        return new MaxSum(l, r, max);
     }
 }
+
